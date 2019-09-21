@@ -3,14 +3,9 @@
 var templatePicture = document.querySelector('#picture').content.querySelector('.picture');
 var picturesList = document.querySelector('.pictures');
 
-var getRandom = function (min, max) {
-  var rand = min + Math.random() * (max + 1 - min);
-  return Math.floor(rand);
-};
-
-var PHOTOS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+var PHOTOS_COUNT = 25;
+var AVATARS = 6;
 var DESCRIPTION = ['описание фотографии'];
-var AVATARS = 'img/avatar-' + getRandom(1, 6) + '.svg';
 var MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -28,58 +23,72 @@ var USER_NAMES = [
   'Филипп_Бедросович'
 ];
 
-var userPosts = [];
-
-var makeMok = function () {
-
-  var getComment = function (avatar, message, name) {
-    return {
-      avatar: avatar,
-      message: message[getRandom(0, message.length - 1)],
-      name: name[getRandom(0, name.length - 1)]
-    };
-  };
-
-  var getComments = function (comments, length) {
-    var arr = [];
-    for (var i = 0; i < length; i++) {
-      arr[i] = comments;
-    }
-    return arr;
-  };
-
-  var renderPhotos = function (photos, descriptions, likes, comments) {
-    return {
-      url: 'photos' + '/' + getRandom(1, photos.length) + '.jpg',
-      description: descriptions[getRandom(0, descriptions.length - 1)],
-      likes: likes,
-      comments: comments
-    };
-  };
-
-  for (var i = 0; i < PHOTOS.length; i++) {
-    userPosts[i] = renderPhotos(PHOTOS, DESCRIPTION, getRandom(1, 200), getComments(getComment(AVATARS, MESSAGES, USER_NAMES), getRandom(0, 10)));
-  }
-
-  return userPosts;
+var getRandom = function (min, max) {
+  var rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand);
 };
 
-userPosts = makeMok();
+var getComments = function (commentsNumber, message, name) {
+  var arr = [];
 
-var fragment = document.createDocumentFragment();
-for (var i = 0; i < userPosts.length; i++) {
-  var element = templatePicture.cloneNode(true);
-  var pictureComment = templatePicture.querySelector('.picture__comments').cloneNode(true);
-  var pictureLikes = templatePicture.querySelector('.picture__likes').cloneNode(true);
+  for (var i = 1; i < getRandom(1, commentsNumber); i++) {
+    for (var j = 0; j < commentsNumber; j++) {
+      arr[j] = {
+        avatar: 'img/avatar-' + getRandom(1, AVATARS) + '.svg',
+        message: message[getRandom(0, message.length - 1)],
+        name: name[getRandom(0, name.length - 1)]
+      };
+    }
+  }
 
-  element.querySelector('.picture__img').src = userPosts[i].url;
-  element.querySelector('.picture__info').textContent = userPosts[i].description;
-  element.querySelector('.picture__info').appendChild(pictureComment);
-  element.querySelector('.picture__comments').textContent = userPosts[i].comments.length;
-  element.querySelector('.picture__info').appendChild(pictureLikes);
-  element.querySelector('.picture__likes').textContent = userPosts[i].likes;
+  return arr;
+};
 
-  fragment.appendChild(element);
-}
+var renderPhotos = function (photoNumber, descriptions, likes, comments) {
+  return {
+    url: 'photos' + '/' + photoNumber + '.jpg',
+    description: descriptions[getRandom(0, descriptions.length - 1)],
+    likes: likes,
+    comments: comments
+  };
+};
 
-picturesList.appendChild(fragment);
+var getMoks = function () {
+  var arr = [];
+
+  for (var i = 0; i < PHOTOS_COUNT; i++) {
+    arr[i] = renderPhotos(
+        i + 1,
+        DESCRIPTION,
+        getRandom(1, 200),
+        getComments(getRandom(1, 10), MESSAGES, USER_NAMES)
+    );
+  }
+
+  return arr;
+};
+
+var userPosts = getMoks();
+
+var getPosts = function (arr) {
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < arr.length; i++) {
+    var element = templatePicture.cloneNode(true);
+    var pictureComment = templatePicture.querySelector('.picture__comments').cloneNode(true);
+    var pictureLikes = templatePicture.querySelector('.picture__likes').cloneNode(true);
+
+    element.querySelector('.picture__img').src = arr[i].url;
+    element.querySelector('.picture__info').textContent = arr[i].description;
+    element.querySelector('.picture__info').appendChild(pictureComment);
+    element.querySelector('.picture__comments').textContent = arr[i].comments.length;
+    element.querySelector('.picture__info').appendChild(pictureLikes);
+    element.querySelector('.picture__likes').textContent = arr[i].likes;
+
+    fragment.appendChild(element);
+  }
+
+  return fragment;
+};
+
+picturesList.appendChild(getPosts(userPosts));
