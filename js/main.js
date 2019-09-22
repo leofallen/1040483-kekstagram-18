@@ -4,6 +4,8 @@ var templatePicture = document.querySelector('#picture').content.querySelector('
 var picturesList = document.querySelector('.pictures');
 
 var PHOTOS_COUNT = 25;
+var COMMENTS_COUNT = 10;
+var LIKES_COUNT = 200;
 var AVATARS = 6;
 var DESCRIPTION = ['описание фотографии'];
 var MESSAGES = [
@@ -60,8 +62,8 @@ var getMoks = function () {
     arr[i] = renderPhotos(
         i + 1,
         DESCRIPTION,
-        getRandom(1, 200),
-        getComments(getRandom(1, 10), MESSAGES, USER_NAMES)
+        getRandom(1, LIKES_COUNT),
+        getComments(getRandom(1, COMMENTS_COUNT), MESSAGES, USER_NAMES)
     );
   }
 
@@ -75,14 +77,9 @@ var getPosts = function (arr) {
 
   for (var i = 0; i < arr.length; i++) {
     var element = templatePicture.cloneNode(true);
-    var pictureComment = templatePicture.querySelector('.picture__comments').cloneNode(true);
-    var pictureLikes = templatePicture.querySelector('.picture__likes').cloneNode(true);
 
     element.querySelector('.picture__img').src = arr[i].url;
-    element.querySelector('.picture__info').textContent = arr[i].description;
-    element.querySelector('.picture__info').appendChild(pictureComment);
     element.querySelector('.picture__comments').textContent = arr[i].comments.length;
-    element.querySelector('.picture__info').appendChild(pictureLikes);
     element.querySelector('.picture__likes').textContent = arr[i].likes;
 
     fragment.appendChild(element);
