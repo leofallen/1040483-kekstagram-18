@@ -2,8 +2,22 @@
 
 var templatePicture = document.querySelector('#picture').content.querySelector('.picture');
 var picturesList = document.querySelector('.pictures');
+var bigPicture = document.querySelector('.big-picture');
+var bigPictureImg = bigPicture.querySelector('.big-picture__img')
+.querySelector('img');
+var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
+var bigPictureOverlay = document.querySelector('.overlay');
+var bigPictureSocial = document.querySelector('.big-picture__social');
+var bigPictureLikesCount = bigPictureSocial.querySelector('.likes-count');
+var bigPictureCommentCount = bigPictureSocial.querySelector('.comments-count');
+var bigPictureCommentsList = bigPictureSocial.querySelector('.social__comments');
+var bigPictureImgDescription = bigPictureSocial.querySelector('.social__caption');
+var socialCommentCount = bigPictureSocial.querySelector('.social__comment-count');
+var commentLoader = bigPictureSocial.querySelector('.comments-loader');
 
 var PHOTOS_COUNT = 25;
+var COMMENTS_COUNT = 10;
+var LIKES_COUNT = 200;
 var AVATARS = 6;
 var DESCRIPTION = ['описание фотографии'];
 var MESSAGES = [
@@ -30,7 +44,6 @@ var getRandom = function (min, max) {
 
 var getComments = function (commentsNumber, message, name) {
   var arr = [];
-
   for (var i = 1; i < getRandom(1, commentsNumber); i++) {
     for (var j = 0; j < commentsNumber; j++) {
       arr[j] = {
@@ -60,8 +73,8 @@ var getMoks = function () {
     arr[i] = renderPhotos(
         i + 1,
         DESCRIPTION,
-        getRandom(1, 200),
-        getComments(getRandom(1, 10), MESSAGES, USER_NAMES)
+        getRandom(1, LIKES_COUNT),
+        getComments(getRandom(1, COMMENTS_COUNT), MESSAGES, USER_NAMES)
     );
   }
 
@@ -75,14 +88,9 @@ var getPosts = function (arr) {
 
   for (var i = 0; i < arr.length; i++) {
     var element = templatePicture.cloneNode(true);
-    var pictureComment = templatePicture.querySelector('.picture__comments').cloneNode(true);
-    var pictureLikes = templatePicture.querySelector('.picture__likes').cloneNode(true);
 
     element.querySelector('.picture__img').src = arr[i].url;
-    element.querySelector('.picture__info').textContent = arr[i].description;
-    element.querySelector('.picture__info').appendChild(pictureComment);
     element.querySelector('.picture__comments').textContent = arr[i].comments.length;
-    element.querySelector('.picture__info').appendChild(pictureLikes);
     element.querySelector('.picture__likes').textContent = arr[i].likes;
 
     fragment.appendChild(element);
@@ -92,3 +100,50 @@ var getPosts = function (arr) {
 };
 
 picturesList.appendChild(getPosts(userPosts));
+
+bigPicture.classList.remove('hidden');
+bigPictureClose.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  bigPicture.classList.add('hidden');
+});
+
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === 27) {
+    bigPicture.classList.add('hidden');
+  }
+});
+
+bigPictureOverlay.addEventListener('click', function () {
+  bigPicture.classList.add('hidden');
+});
+
+bigPictureImg.src = userPosts[0].url;
+bigPictureLikesCount.textContent = userPosts[0].likes;
+bigPictureCommentCount.textContent = userPosts[0].comments.length;
+bigPictureImgDescription.textContent = userPosts[0].description;
+
+var getComment = function () {
+  var commentElement = document.createElement('li');
+  var commentElementImg = document.createElement('img');
+  var commentElementText = document.createElement('p');
+
+  commentElement.className = 'social__comment';
+  commentElementImg.className = 'social__picture';
+  commentElementText.className = 'social__text';
+
+  commentElementImg.src = userPosts[0].comments[0].avatar;
+  commentElementImg.alt = userPosts[0].comments[0].name;
+  commentElementText.textContent = userPosts[0].comments[0].message;
+
+  commentElement.appendChild(commentElementImg);
+  commentElement.appendChild(commentElementText);
+
+  return commentElement;
+};
+
+var commentItem = getComment();
+
+bigPictureCommentsList.appendChild(commentItem);
+
+socialCommentCount.classList.add('visually-hidden');
+commentLoader.classList.add('visually-hidden');
