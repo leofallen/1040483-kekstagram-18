@@ -6,7 +6,6 @@ var bigPicture = document.querySelector('.big-picture');
 var bigPictureImg = bigPicture.querySelector('.big-picture__img')
 .querySelector('img');
 var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
-var bigPictureOverlay = document.querySelector('.overlay');
 var bigPictureSocial = document.querySelector('.big-picture__social');
 var bigPictureLikesCount = bigPictureSocial.querySelector('.likes-count');
 var bigPictureCommentCount = bigPictureSocial.querySelector('.comments-count');
@@ -68,7 +67,6 @@ var renderPhotos = function (photoNumber, descriptions, likes, comments) {
 
 var getMoks = function () {
   var arr = [];
-
   for (var i = 0; i < PHOTOS_COUNT; i++) {
     arr[i] = renderPhotos(
         i + 1,
@@ -111,10 +109,6 @@ document.addEventListener('keydown', function (evt) {
   if (evt.keyCode === 27) {
     bigPicture.classList.add('hidden');
   }
-});
-
-bigPictureOverlay.addEventListener('click', function () {
-  bigPicture.classList.add('hidden');
 });
 
 bigPictureImg.src = userPosts[0].url;
