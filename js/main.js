@@ -43,7 +43,7 @@ var getRandom = function (min, max) {
 
 var getComments = function (commentsNumber, message, name) {
   var arr = [];
-  for (var i = 1; i < getRandom(1, commentsNumber); i++) {
+  for (var i = 0; i < getRandom(1, commentsNumber); i++) {
     for (var j = 0; j < commentsNumber; j++) {
       arr[j] = {
         avatar: 'img/avatar-' + getRandom(1, AVATARS) + '.svg',
