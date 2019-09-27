@@ -13,6 +13,12 @@ var bigPictureCommentsList = bigPictureSocial.querySelector('.social__comments')
 var bigPictureImgDescription = bigPictureSocial.querySelector('.social__caption');
 var socialCommentCount = bigPictureSocial.querySelector('.social__comment-count');
 var commentLoader = bigPictureSocial.querySelector('.comments-loader');
+var upLoader = picturesList.querySelector('#upload-file');
+var imgSetup = picturesList.querySelector('.img-upload__overlay');
+var imgScaleOutput = picturesList.querySelector('.scale__control--value');
+var imgScaleSmall = picturesList.querySelector('.scale__control--smaller');
+var imgScaleBig = picturesList.querySelector('.scale__control--bigger');
+var img = picturesList.querySelector('.img-upload__preview').querySelector('img');
 
 var PHOTOS_COUNT = 25;
 var COMMENTS_COUNT = 10;
@@ -35,6 +41,8 @@ var USER_NAMES = [
   'Varg_Vikernes',
   'Филипп_Бедросович'
 ];
+var IMG_MIN_SIZE = 25;
+var IMG_MAX_SIZE = 100;
 
 var getRandom = function (min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -141,3 +149,27 @@ bigPictureCommentsList.appendChild(commentItem);
 
 socialCommentCount.classList.add('visually-hidden');
 commentLoader.classList.add('visually-hidden');
+
+upLoader.addEventListener('change', function () {
+  imgSetup.classList.remove('hidden');
+});
+
+img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
+
+imgScaleSmall.addEventListener('click', function () {
+  if (imgScaleOutput.value.replace('%', '') > IMG_MIN_SIZE) {
+    var numValue = (imgScaleOutput.value.replace('%', ''));
+    imgScaleOutput.value = numValue - IMG_MIN_SIZE;
+    img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
+    imgScaleOutput.value = imgScaleOutput.value + '%';
+  }
+});
+
+imgScaleBig.addEventListener('click', function () {
+  if (imgScaleOutput.value.replace('%', '') < IMG_MAX_SIZE) {
+    var numValue = (imgScaleOutput.value.replace('%', ''));
+    imgScaleOutput.value = Number(numValue) + IMG_MIN_SIZE;
+    img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
+    imgScaleOutput.value = imgScaleOutput.value + '%';
+  }
+});
