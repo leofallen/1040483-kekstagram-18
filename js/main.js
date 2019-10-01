@@ -156,10 +156,12 @@ bigPictureCommentsList.appendChild(commentItem);
 socialCommentCount.classList.add('visually-hidden');
 commentLoader.classList.add('visually-hidden');
 
-upLoader.addEventListener('change', function () {
+var onUpLoaderChange = function () {
   imgSetup.classList.remove('hidden');
   document.addEventListener('keydown', onImgSetupEscPress);
-});
+};
+
+upLoader.addEventListener('change', onUpLoaderChange);
 
 img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
 
@@ -200,8 +202,8 @@ var imgSetupClose = function () {
 };
 
 imgSetupButtonClose.addEventListener('click', imgSetupClose);
-
 imgSetupButtonClose.addEventListener('keydown', imgSetupClose);
+
 
 var addClickListener = function (button) {
   button.addEventListener('click', function () {
@@ -232,6 +234,13 @@ effectLevelPin.addEventListener('mousedown', function (evt) {
     startCoords = moveEvt.clientX;
     effectLevelPin.style.left = (effectLevelPin.offsetLeft - shift) + 'px';
     effectLevelDepth.style.width = ((effectLevelPin.offsetLeft - shift) / 4.5) + '%';
+    if (effectLevelPin.style.left.replace('px', '') < 0) {
+      effectLevelPin.style.left = '0px';
+      effectLevelDepth.style.width = '0%';
+    } else if (effectLevelPin.style.left.replace('px', '') > 453) {
+      effectLevelPin.style.left = '453px';
+      effectLevelDepth.style.width = '100%';
+    }
   };
 
   var onMouseUp = function () {
@@ -240,6 +249,7 @@ effectLevelPin.addEventListener('mousedown', function (evt) {
 
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
+
 });
 
 
