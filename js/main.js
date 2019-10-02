@@ -202,8 +202,6 @@ var imgSetupClose = function () {
 };
 
 imgSetupButtonClose.addEventListener('click', imgSetupClose);
-imgSetupButtonClose.addEventListener('keydown', imgSetupClose);
-
 
 var addClickListener = function (button) {
   button.addEventListener('click', function () {
@@ -215,6 +213,7 @@ var addClickListener = function (button) {
     if (img.classList.contains('effects__preview--none')) {
       effectLevelBar.style.display = 'none';
     }
+    imgScaleOutput.value = '100%';
   });
 };
 
