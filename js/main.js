@@ -25,6 +25,7 @@ var effectLevelValue = picturesList.querySelector('.effect-level__value');
 var effectLevelPin = picturesList.querySelector('.effect-level__pin');
 var effectLevelDepth = picturesList.querySelector('.effect-level__depth');
 var effectLevelBar = picturesList.querySelector('.img-upload__effect-level');
+var imgUploadForm = picturesList.querySelector('.img-upload__form');
 
 var PHOTOS_COUNT = 25;
 var COMMENTS_COUNT = 10;
@@ -49,6 +50,8 @@ var USER_NAMES = [
 ];
 var IMG_MIN_SIZE = 25;
 var IMG_MAX_SIZE = 100;
+var ESC_BUTTON = 27;
+// var ENTER_BUTTON = 13;
 
 var getRandom = function (min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -95,6 +98,8 @@ var getMoks = function () {
 
 var userPosts = getMoks();
 
+// создание постов и встраивание их в разметку
+
 var getPosts = function (arr) {
   var fragment = document.createDocumentFragment();
 
@@ -113,6 +118,8 @@ var getPosts = function (arr) {
 
 picturesList.appendChild(getPosts(userPosts));
 
+// показ, наполнение и закрытие большой картинки
+
 // bigPicture.classList.remove('hidden');
 bigPictureClose.addEventListener('click', function (evt) {
   evt.preventDefault();
@@ -120,7 +127,7 @@ bigPictureClose.addEventListener('click', function (evt) {
 });
 
 document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === 27) {
+  if (evt.keyCode === ESC_BUTTON) {
     bigPicture.classList.add('hidden');
   }
 });
@@ -129,6 +136,8 @@ bigPictureImg.src = userPosts[0].url;
 bigPictureLikesCount.textContent = userPosts[0].likes;
 bigPictureCommentCount.textContent = userPosts[0].comments.length;
 bigPictureImgDescription.textContent = userPosts[0].description;
+
+// создание коментария и размещение его в разметке
 
 var getComment = function () {
   var commentElement = document.createElement('li');
@@ -156,12 +165,40 @@ bigPictureCommentsList.appendChild(commentItem);
 socialCommentCount.classList.add('visually-hidden');
 commentLoader.classList.add('visually-hidden');
 
+// открытие и закрытие формы загрузки и редактирования фото
+
 var onUpLoaderChange = function () {
   imgSetup.classList.remove('hidden');
   document.addEventListener('keydown', onImgSetupEscPress);
 };
 
+var imgSetupReset = function () {
+  img.style.transform = 'scale(1)';
+  imgScaleOutput.value = '100%';
+  img.removeAttribute('style');
+  img.removeAttribute('class');
+  effectLevelPin.style.left = '453px';
+  effectLevelDepth.style.width = '100%';
+};
+
+var onImgSetupEscPress = function (evt) {
+  if (evt.keyCode === 27) {
+    imgSetup.classList.add('hidden');
+    imgSetupReset();
+    imgUploadForm.reset();
+  }
+};
+
+var imgSetupClose = function () {
+  imgSetup.classList.add('hidden');
+  document.removeEventListener('keydown', onImgSetupEscPress);
+  imgSetupReset();
+};
+
 upLoader.addEventListener('change', onUpLoaderChange);
+imgSetupButtonClose.addEventListener('click', imgSetupClose);
+
+// мастшабирование фотографии
 
 img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
 
@@ -183,25 +220,7 @@ imgScaleBig.addEventListener('click', function () {
   }
 });
 
-imgSetupButtonClose.addEventListener('click', function () {
-  imgSetup.classList.add('hidden');
-  img.style.transform = 'scale(1)';
-});
-
-var onImgSetupEscPress = function (evt) {
-  if (evt.keyCode === 27) {
-    imgSetup.classList.add('hidden');
-    img.style.transform = 'scale(1)';
-    imgScaleOutput.value = '100%';
-  }
-};
-
-var imgSetupClose = function () {
-  imgSetup.classList.add('hidden');
-  document.removeEventListener('keydown', onImgSetupEscPress);
-};
-
-imgSetupButtonClose.addEventListener('click', imgSetupClose);
+// переключение фильтров для фото
 
 var addClickListener = function (button) {
   button.addEventListener('click', function () {
@@ -221,6 +240,8 @@ for (var i = 0; i < effects.length; i++) {
   var button = effects[i];
   addClickListener(button);
 }
+
+// реализация слайдера эффекта
 
 effectLevelPin.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
@@ -248,12 +269,13 @@ effectLevelPin.addEventListener('mousedown', function (evt) {
 
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
-
 });
 
+// насыщеность эфекта в зависимости от положения слайдера
 
 effectLevelPin.addEventListener('mousedown', function () {
-  document.addEventListener('mousemove', function () {
+
+  var onMouseMove = function () {
     if (img.classList.contains('effects__preview--chrome')) {
       img.style.filter = 'grayscale(' + effectLevelDepth.style.width.replace('%', '') * 0.01 + ')';
       effectLevelValue.setAttribute('value', '' + effectLevelDepth.style.width.replace('%', '') * 0.01 + '');
@@ -270,5 +292,12 @@ effectLevelPin.addEventListener('mousedown', function () {
       img.style.filter = 'brightness(' + ((effectLevelDepth.style.width.replace('%', '') * 0.02) + 1) + ')';
       effectLevelValue.textContent = ((effectLevelDepth.style.width.replace('%', '') * 0.02) + 1);
     }
-  });
+  };
+
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMouseMove);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
