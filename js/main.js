@@ -3,6 +3,7 @@
 var templatePicture = document.querySelector('#picture').content.querySelector('.picture');
 var picturesList = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
+// var bigImg = bigPicture.querySelector('img');
 var bigPictureImg = bigPicture.querySelector('.big-picture__img')
 .querySelector('img');
 var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
@@ -28,6 +29,7 @@ var effectLevelBar = picturesList.querySelector('.img-upload__effect-level');
 var imgUploadForm = picturesList.querySelector('.img-upload__form');
 var hashtagInput = picturesList.querySelector('.text__hashtags');
 var commentInput = picturesList.querySelector('.text__description');
+// var smallPhotos = picturesList.querySelectorAll('.picture__img');
 
 var PHOTOS_COUNT = 25;
 var COMMENTS_COUNT = 10;
@@ -56,6 +58,8 @@ var ESC_BUTTON = 27;
 var MIN_SLIDER_COORDS = 0;
 var MAX_SLIDER_COORDS = 453;
 // var ENTER_BUTTON = 13;
+var MAX_TAGS = 5;
+var HASHTAG_LENGTH = 20;
 
 var getRandom = function (min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -330,50 +334,76 @@ effectLevelPin.addEventListener('mousedown', function () {
 
 // валидация поля хештегов
 
-var getHashtagEror = function () {
+var getArrToLowerCase = function (arr) {
+  for (var index = 0; index < arr.length; index++) {
+    arr[index] = arr[index].toLowerCase();
+  }
+
+  return arr;
+};
+
+var getDoudleSimbolError = function (string, simbol) {
+  for (var ii = 1; ii < string.length; ii++) {
+    if (string[ii].includes(simbol)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+var getDoubleHashtagError = function (hashtag, arr, currentIndex) {
+  for (var j = 1; j < arr.length; j++) {
+    if (hashtag === arr[currentIndex + j]) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+var getHashtagError = function () {
   var hashtags = hashtagInput.value.split(' ');
 
-  if (hashtags.length > 5) {
-    return hashtagInput.setCustomValidity('не больше 5 хештегов');
-  } else if (hashtags.length < 5) {
-    hashtagInput.setCustomValidity('');
+  hashtags = getArrToLowerCase(hashtags);
+
+  if (hashtags.length > MAX_TAGS) {
+    return 'не больше 5 хештегов';
   }
 
   for (var ind = 0; ind < hashtags.length; ind++) {
+    var currentHashtag = hashtags[ind];
 
     if (
-      hashtags[ind][0] !== undefined
-      && hashtags[ind][0] !== '#'
+      currentHashtag[0] !== undefined
+      && currentHashtag[0] !== '#'
       || hashtags.length > 1
-      && hashtags[ind][0] !== '#'
+      && currentHashtag[0] !== '#'
     ) {
-      return hashtagInput.setCustomValidity('все хештеги дожны начинаться с #');
-    } else {
-      hashtagInput.setCustomValidity('');
+      return 'все хештеги дожны начинаться с #';
     }
 
-    if (hashtags[ind] === '#') {
-      return hashtagInput.setCustomValidity('хештег не может состоять из одной #');
-    } else {
-      hashtagInput.setCustomValidity('');
+    if (currentHashtag === '#') {
+      return 'хештег не может состоять из одной #';
     }
 
-    if (hashtags[ind].length > 20) {
-      hashtagInput.setCustomValidity('хештеги должны быть не больше 20 символов');
-    } else {
-      hashtagInput.setCustomValidity('');
+    if (currentHashtag.length > HASHTAG_LENGTH) {
+      return 'хештеги должны быть не больше 20 символов';
     }
 
-    for (var j = 1; j < hashtags.length; j++) {
-      if (hashtags[ind] === hashtags[ind + j]) {
-        return hashtagInput.setCustomValidity('хештеги не должны повторяться');
-      } else if (hashtags[ind] !== hashtags[ind + j]) {
-        hashtagInput.setCustomValidity('');
-      }
+    if (getDoubleHashtagError(currentHashtag, hashtags, ind)) {
+      return 'хештеги не должны повторяться';
     }
+  }
+
+  if (getDoudleSimbolError(currentHashtag, '#')) {
+    return 'хештеги должны разделяться пробелом';
   }
 
   return '';
 };
 
-hashtagInput.addEventListener('input', getHashtagEror);
+hashtagInput.addEventListener('input', function () {
+  var message = getHashtagError();
+  hashtagInput.setCustomValidity(message);
+});
