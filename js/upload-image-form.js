@@ -93,7 +93,7 @@
 
   // переключение фильтров для фото
 
-  var addClickListener = function (button) {
+  var filterClickListener = function (button) {
     button.addEventListener('click', function () {
       img.className = 'effects__preview--' + button.value;
       img.removeAttribute('style');
@@ -117,10 +117,14 @@
     });
   };
 
-  for (var i = 0; i < effects.length; i++) {
-    var button = effects[i];
-    addClickListener(button);
-  }
+  var filterTogle = function () {
+    for (var i = 0; i < effects.length; i++) {
+      var button = effects[i];
+      filterClickListener(button);
+    }
+  };
+
+  filterTogle();
 
   // реализация слайдера эффектов
 
@@ -203,7 +207,7 @@
     return false;
   };
 
-  var getDoubleHashtagError = function (hashtag, arr, currentIndex) {
+  var getReplayHashtagError = function (hashtag, arr, currentIndex) {
     for (var j = 1; j < arr.length; j++) {
       if (hashtag === arr[currentIndex + j]) {
         return true;
@@ -215,39 +219,41 @@
 
   var getHashtagError = function () {
     var hashtags = hashtagInput.value.split(' ');
+    var checkMaxHashtagsQuantity = (hashtags.length > MAX_TAGS);
 
     hashtags = getArrToLowerCase(hashtags);
 
-    if (hashtags.length > MAX_TAGS) {
+    if (checkMaxHashtagsQuantity) {
       return 'не больше 5 хештегов';
     }
 
-    for (var ind = 0; ind < hashtags.length; ind++) {
-      var currentHashtag = hashtags[ind];
+    for (var i = 0; i < hashtags.length; i++) {
 
-      if (
-        currentHashtag[0] !== undefined
-        && currentHashtag[0] !== '#'
-        || hashtags.length > 1
-        && currentHashtag[0] !== '#'
-      ) {
+      var currentHashtag = hashtags[i];
+      var checkHashtagStart = (currentHashtag[0] !== undefined && currentHashtag[0] !== '#' || hashtags.length > 1 && currentHashtag[0] !== '#');
+      var chekHashtagMinLength = (currentHashtag === '#');
+      var chekHashtagMaxLength = (currentHashtag.length > HASHTAG_LENGTH);
+      var checkHashtagReplay = (getReplayHashtagError(currentHashtag, hashtags, i));
+      var checkHashtagSpace = (getDoudleSimbolError(currentHashtag, '#'));
+
+      if (checkHashtagStart) {
         return 'все хештеги дожны начинаться с #';
       }
 
-      if (currentHashtag === '#') {
+      if (chekHashtagMinLength) {
         return 'хештег не может состоять из одной #';
       }
 
-      if (currentHashtag.length > HASHTAG_LENGTH) {
+      if (chekHashtagMaxLength) {
         return 'хештеги должны быть не больше 20 символов';
       }
 
-      if (getDoubleHashtagError(currentHashtag, hashtags, ind)) {
+      if (checkHashtagReplay) {
         return 'хештеги не должны повторяться';
       }
     }
 
-    if (getDoudleSimbolError(currentHashtag, '#')) {
+    if (checkHashtagSpace) {
       return 'хештеги должны разделяться пробелом';
     }
 

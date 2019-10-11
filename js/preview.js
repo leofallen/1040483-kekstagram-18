@@ -21,13 +21,13 @@
     bigPicture.classList.remove('hidden');
   };
 
-  var onPrewievClick = function (element, index) {
+  var onPreviewClick = function (element, index) {
     element.addEventListener('click', function () {
       bigImageOpen(index);
     });
   };
 
-  var onPrewievEnterKeydown = function (element, index) {
+  var onPreviewEnterKeydown = function (element, index) {
     element.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.ENTER_BUTTON) {
         bigImageOpen(index);
@@ -84,11 +84,15 @@
     });
   };
 
-  for (var i = 0; i < previewImg.length; i++) {
-    onPrewievClick(previewImg[i], i + 1);
-    onPrewievEnterKeydown(previewImg[i], i + 1);
-    getBigPictureComment(previewImg[i], window.userPosts[i], i);
-  }
+  var previewImgListner = function () {
+    for (var i = 0; i < previewImg.length; i++) {
+      onPreviewClick(previewImg[i], i + 1);
+      onPreviewEnterKeydown(previewImg[i], i + 1);
+      getBigPictureComment(previewImg[i], window.userPosts[i], i);
+    }
+  };
+
+  previewImgListner();
 
   commentLoaderInput.addEventListener('focusin', function () {
     bigPictureClose.removeEventListener('click', onBigPictureButtonCloseClick);
