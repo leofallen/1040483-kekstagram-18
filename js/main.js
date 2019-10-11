@@ -3,13 +3,13 @@
 var templatePicture = document.querySelector('#picture').content.querySelector('.picture');
 var picturesList = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
-// var bigImg = bigPicture.querySelector('img');
-var bigPictureImg = bigPicture.querySelector('.big-picture__img')
-.querySelector('img');
+var bigImg = bigPicture.querySelector('img');
+// var bigPictureImg = bigPicture.querySelector('.big-picture__img')
+// .querySelector('img');
 var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
 var bigPictureSocial = document.querySelector('.big-picture__social');
 var bigPictureLikesCount = bigPictureSocial.querySelector('.likes-count');
-var bigPictureCommentCount = bigPictureSocial.querySelector('.comments-count');
+// var bigPictureCommentCount = bigPictureSocial.querySelector('.comments-count');
 var bigPictureCommentsList = bigPictureSocial.querySelector('.social__comments');
 var bigPictureImgDescription = bigPictureSocial.querySelector('.social__caption');
 var socialCommentCount = bigPictureSocial.querySelector('.social__comment-count');
@@ -29,7 +29,8 @@ var effectLevelBar = picturesList.querySelector('.img-upload__effect-level');
 var imgUploadForm = picturesList.querySelector('.img-upload__form');
 var hashtagInput = picturesList.querySelector('.text__hashtags');
 var commentInput = picturesList.querySelector('.text__description');
-// var smallPhotos = picturesList.querySelectorAll('.picture__img');
+var commentLoaderInput = bigPicture.querySelector('.social__footer-text');
+
 
 var PHOTOS_COUNT = 25;
 var COMMENTS_COUNT = 10;
@@ -57,7 +58,7 @@ var IMG_MAX_SIZE = 100;
 var ESC_BUTTON = 27;
 var MIN_SLIDER_COORDS = 0;
 var MAX_SLIDER_COORDS = 453;
-// var ENTER_BUTTON = 13;
+var ENTER_BUTTON = 13;
 var MAX_TAGS = 5;
 var HASHTAG_LENGTH = 20;
 
@@ -126,28 +127,32 @@ var getPosts = function (arr) {
 
 picturesList.appendChild(getPosts(userPosts));
 
-// показ, наполнение и закрытие большой картинки
+// показ и закарытие, создание коментария и размещение его в разметке, для большой картинки
 
-// bigPicture.classList.remove('hidden');
-bigPictureClose.addEventListener('click', function (evt) {
-  evt.preventDefault();
-  bigPicture.classList.add('hidden');
-});
+var previewImg = picturesList.querySelectorAll('.picture');
 
-document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ESC_BUTTON) {
-    bigPicture.classList.add('hidden');
-  }
-});
+var bigImageOpen = function (index) {
+  bigImg.src = 'photos/' + index + '.jpg';
+  bigPictureLikesCount.textContent = userPosts[index - 1].likes;
+  bigPictureImgDescription.textContent = userPosts[index].description;
+  bigPicture.classList.remove('hidden');
+};
 
-bigPictureImg.src = userPosts[0].url;
-bigPictureLikesCount.textContent = userPosts[0].likes;
-bigPictureCommentCount.textContent = userPosts[0].comments.length;
-bigPictureImgDescription.textContent = userPosts[0].description;
+var onPrewievClick = function (element, index) {
+  element.addEventListener('click', function () {
+    bigImageOpen(index);
+  });
+};
 
-// создание коментария и размещение его в разметке
+var onPrewievEnterKeydown = function (element, index) {
+  element.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_BUTTON) {
+      bigImageOpen(index);
+    }
+  });
+};
 
-var getComment = function () {
+var getComment = function (globIndex, localIndex) {
   var commentElement = document.createElement('li');
   var commentElementImg = document.createElement('img');
   var commentElementText = document.createElement('p');
@@ -156,9 +161,9 @@ var getComment = function () {
   commentElementImg.className = 'social__picture';
   commentElementText.className = 'social__text';
 
-  commentElementImg.src = userPosts[0].comments[0].avatar;
-  commentElementImg.alt = userPosts[0].comments[0].name;
-  commentElementText.textContent = userPosts[0].comments[0].message;
+  commentElementImg.src = userPosts[globIndex].comments[localIndex].avatar;
+  commentElementImg.alt = userPosts[globIndex].comments[localIndex].name;
+  commentElementText.textContent = userPosts[globIndex].comments[localIndex].message;
 
   commentElement.appendChild(commentElementImg);
   commentElement.appendChild(commentElementText);
@@ -166,12 +171,49 @@ var getComment = function () {
   return commentElement;
 };
 
-var commentItem = getComment();
-
-bigPictureCommentsList.appendChild(commentItem);
-
 socialCommentCount.classList.add('visually-hidden');
 commentLoader.classList.add('visually-hidden');
+
+var onBigPictureButtonCloseClick = function (evt) {
+  evt.preventDefault();
+  bigPicture.classList.add('hidden');
+  bigPictureCommentsList.innerHTML = '';
+};
+
+var onBigpictureEscPress = function (evt) {
+  if (evt.keyCode === ESC_BUTTON) {
+    evt.preventDefault();
+    bigPicture.classList.add('hidden');
+    bigPictureCommentsList.innerHTML = '';
+  }
+};
+
+bigPictureClose.addEventListener('click', onBigPictureButtonCloseClick);
+document.addEventListener('keydown', onBigpictureEscPress);
+
+var getBigPictureComment = function (element, arr, globIndex) {
+  element.addEventListener('click', function () {
+    for (var ii = 0; ii < arr.comments.length; ii++) {
+      bigPictureCommentsList.appendChild(getComment(globIndex, ii));
+    }
+  });
+};
+
+for (var iii = 0; iii < previewImg.length; iii++) {
+  onPrewievClick(previewImg[iii], iii + 1);
+  onPrewievEnterKeydown(previewImg[iii], iii + 1);
+  getBigPictureComment(previewImg[iii], userPosts[iii], iii);
+}
+
+commentLoaderInput.addEventListener('focusin', function () {
+  bigPictureClose.removeEventListener('click', onBigPictureButtonCloseClick);
+  document.removeEventListener('keydown', onBigpictureEscPress);
+});
+
+commentLoaderInput.addEventListener('focusout', function () {
+  bigPictureClose.addEventListener('click', onBigPictureButtonCloseClick);
+  document.addEventListener('keydown', onBigpictureEscPress);
+});
 
 // открытие и закрытие формы загрузки и редактирования фото
 
