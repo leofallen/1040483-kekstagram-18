@@ -232,7 +232,7 @@ var imgSetupReset = function () {
 };
 
 var onImgSetupEscPress = function (evt) {
-  if (evt.keyCode === 27) {
+  if (evt.keyCode === ESC_BUTTON) {
     imgSetup.classList.add('hidden');
     imgSetupReset();
     imgUploadForm.reset();
