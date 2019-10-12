@@ -48,6 +48,14 @@
     }
   };
 
+  var onOverlayImgCloseClick = function (evt) {
+    if (evt.target === imgSetup) {
+      imgSetup.classList.add('hidden');
+      document.removeEventListener('keydown', onImgSetupEscPress);
+      imgSetupReset();
+    }
+  };
+
   var imgSetupClose = function () {
     imgSetup.classList.add('hidden');
     document.removeEventListener('keydown', onImgSetupEscPress);
@@ -68,6 +76,7 @@
   commentInput.addEventListener('focusout', function () {
     document.addEventListener('keydown', onImgSetupEscPress);
   });
+  imgSetup.addEventListener('click', onOverlayImgCloseClick);
 
   // мастшабирование фотографии
 
