@@ -200,6 +200,18 @@
     </a>
   </template>
 
+  <!-- Сообщение с ошибкой загрузки галлереи -->
+  <template id="data-error">
+    <section class="error">
+      <div class="error__inner">
+        <h2 class="error__title">Что то пошло не так...</h2>
+        <div class="error__buttons">
+          <button type="button" class="error__button">Перезагрузить страницу</button>
+        </div>
+      </div>
+    </section>
+  </template>
+
   <!-- Сообщение с ошибкой загрузки изображения -->
   <template id="error">
     <section class="error">
@@ -228,6 +240,7 @@
     <div class="img-upload__message  img-upload__message--loading">Загружаем...</div>
   </template>
   <script src="js/data.js"></script>
+  <script src="js/load.js"></script>
   <script src="js/gallery.js"></script>
   <script src="js/form.js"></script>
   <script src="js/preview.js"></script>
