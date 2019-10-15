@@ -3,7 +3,7 @@
 (function () {
   var templatePicture = document.querySelector('#picture').content.querySelector('.picture');
   var templateDataError = document.querySelector('#data-error').content.querySelector('.error');
-  var main = document.querySelector('main');
+  window.main = document.querySelector('main');
 
   // показ окна ошибки загрузки данных
   window.getDataError = function () {
@@ -16,7 +16,7 @@
     });
     fragment.appendChild(element);
 
-    main.appendChild(fragment);
+    window.main.appendChild(fragment);
   };
 
   var onError = function () {

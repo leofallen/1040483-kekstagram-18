@@ -17,7 +17,9 @@
   var effects = window.picturesList.querySelectorAll('.effects__radio');
   var effectLevelBar = window.picturesList.querySelector('.img-upload__effect-level');
   var effectLevelValue = window.picturesList.querySelector('.effect-level__value');
-
+  var TemplateSuccess = document.querySelector('#success').content.querySelector('.success');
+  var TemplateError = document.querySelector('#error').content.querySelector('.error');
+  var TemplateLoad = document.querySelector('#messages').content.querySelector('.img-upload__message');
 
   var IMG_MIN_SIZE = 25;
   var IMG_MAX_SIZE = 100;
@@ -272,6 +274,47 @@
   hashtagInput.addEventListener('input', function () {
     var message = getHashtagError();
     hashtagInput.setCustomValidity(message);
+  });
+
+  // загрузка изображения
+
+  // показ окна успешной загрузки
+  var getSuccessUpload = function () {
+    var fragment = document.createDocumentFragment();
+    var element = TemplateSuccess.cloneNode(true);
+    var button = element.querySelector('.success__button');
+    button.addEventListener('click', function () {
+      element.classList.add('visually-hidden');
+    });
+    element.addEventListener('click', function (evt) {
+      if (evt.target === element) {
+        element.classList.add('visually-hidden');
+      }
+    });
+    fragment.appendChild(element);
+    window.main.appendChild(fragment);
+  };
+
+  var getErrorUpload = function () {
+    var fragment = document.createDocumentFragment();
+    var element = TemplateError.cloneNode(true);
+    element.
+  };
+
+  var onSuccess = function () {
+    imgUploadForm.reset();
+    imgSetup.classList.add('hidden');
+    getSuccessUpload();
+
+  };
+
+  var onError = function () {
+
+  };
+
+  imgUploadForm.addEventListener('submit', function (evt) {
+    window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
+    evt.preventDefault();
   });
 
 })();
