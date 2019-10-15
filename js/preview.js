@@ -73,8 +73,16 @@
     }
   };
 
+  var onOverlayCloseClick = function (evt) {
+    if (evt.target === bigPicture) {
+      bigPicture.classList.add('hidden');
+      bigPictureCommentsList.innerHTML = '';
+    }
+  };
+
   bigPictureClose.addEventListener('click', onBigPictureButtonCloseClick);
   document.addEventListener('keydown', onBigpictureEscPress);
+  bigPicture.addEventListener('click', onOverlayCloseClick);
 
   var getBigPictureComment = function (element, arr, globIndex) {
     element.addEventListener('click', function () {
