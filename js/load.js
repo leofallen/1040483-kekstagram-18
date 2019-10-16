@@ -29,10 +29,12 @@
   };
 
   window.upLoad = function (data, onSuccess, onError) {
-    var URL = 'https://js.dump.academy/kekstagram'
+    var URL = 'https://js.dump.academy/kekstagram';
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
+
+    xhr.addEventListener('unload', window.getUnloadWindow);
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
@@ -54,5 +56,5 @@
 
     xhr.open('POST', URL);
     xhr.send(data);
-  }
+  };
 })();

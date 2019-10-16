@@ -19,7 +19,7 @@
   var effectLevelValue = window.picturesList.querySelector('.effect-level__value');
   var TemplateSuccess = document.querySelector('#success').content.querySelector('.success');
   var TemplateError = document.querySelector('#error').content.querySelector('.error');
-  var TemplateLoad = document.querySelector('#messages').content.querySelector('.img-upload__message');
+  // var TemplateLoad = document.querySelector('#messages').content.querySelector('.img-upload__message');
 
   var IMG_MIN_SIZE = 25;
   var IMG_MAX_SIZE = 100;
@@ -40,13 +40,14 @@
     img.removeAttribute('class');
     effectLevelPin.style.left = '453px';
     effectLevelDepth.style.width = '100%';
+    effectLevelBar.style.display = 'none';
+    imgUploadForm.reset();
   };
 
   var onImgSetupEscPress = function (evt) {
     if (evt.keyCode === 27) {
       imgSetup.classList.add('hidden');
       imgSetupReset();
-      imgUploadForm.reset();
     }
   };
 
@@ -278,7 +279,7 @@
 
   // загрузка изображения
 
-  // показ окна успешной загрузки
+  // показ и закрытие окна успешной загрузки
   var getSuccessUpload = function () {
     var fragment = document.createDocumentFragment();
     var element = TemplateSuccess.cloneNode(true);
@@ -291,25 +292,87 @@
         element.classList.add('visually-hidden');
       }
     });
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.ESC_BUTTON) {
+        element.classList.add('visually-hidden');
+      }
+    });
     fragment.appendChild(element);
     window.main.appendChild(fragment);
   };
 
-  var getErrorUpload = function () {
-    var fragment = document.createDocumentFragment();
-    var element = TemplateError.cloneNode(true);
-    element.
-  };
+  // окно процесса загрузки
+  // window.getUnloadWindow = function () {
+  //   var fragment = document.createDocumentFragment();
+  //   var element = TemplateLoad.cloneNode(true);
+  //   fragment.appendChild(element);
+  //   window.main.appendChild(fragment);
+  // };
+
+  // var getErrorUpload = function () {
+  //   var fragment = document.createDocumentFragment();
+  //   var element = TemplateError.cloneNode(true);
+
+  // };
 
   var onSuccess = function () {
-    imgUploadForm.reset();
     imgSetup.classList.add('hidden');
     getSuccessUpload();
-
+    imgSetupReset();
   };
 
-  var onError = function () {
+  var onError = function (message) {
+    var fragment = document.createDocumentFragment();
+    var element = TemplateError.cloneNode(true);
+    var title = element.querySelector('.error__title');
+    var reloadButton = element.querySelector('.error__button--reload');
+    var restartButton = element.querySelector('.error__button--restart');
+    title.textContent = message;
+    imgSetup.classList.add('hidden');
+    reloadButton.addEventListener('click', function (evt) {
+      window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
+      evt.preventDefault();
+      element.remove();
+      imgSetup.classList.remove('hidden');
+    });
 
+    reloadButton.addEventListener('keydowd', function (evt) {
+      if (evt.keyCode === window.ENTER_BUTTON) {
+        window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
+        evt.preventDefault();
+        element.remove();
+        imgSetup.classList.remove('hidden');
+      }
+    });
+
+    restartButton.addEventListener('click', function () {
+      element.remove();
+      imgSetupReset();
+    });
+
+    restartButton.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.ENTER_BUTTON) {
+        element.remove();
+        imgSetupReset();
+      }
+    });
+
+    element.addEventListener('click', function (evt) {
+      if (evt.target === element) {
+        element.remove();
+        imgSetupReset();
+      }
+    });
+
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.ESC_BUTTON) {
+        element.remove();
+        imgSetupReset();
+      }
+    });
+
+    fragment.appendChild(element);
+    window.main.appendChild(fragment);
   };
 
   imgUploadForm.addEventListener('submit', function (evt) {
