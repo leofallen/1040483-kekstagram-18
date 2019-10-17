@@ -28,6 +28,15 @@
   var HASHTAG_LENGTH = 20;
   var MAX_TAGS = 5;
 
+  var classNameToStyle = {
+    'effects__preview--none': 'none',
+    'effects__preview--chrome': 'grayscale(1)',
+    'effects__preview--sepia': 'sepia(1)',
+    'effects__preview--marvin': 'invert(100%)',
+    'effects__preview--phobos': 'blur(3px)',
+    'effects__preview--heat': 'brightness(3)'
+  };
+
   var onUpLoaderChange = function () {
     imgSetup.classList.remove('hidden');
     document.addEventListener('keydown', onImgSetupEscPress);
@@ -112,19 +121,7 @@
       effectLevelPin.style.left = '453px';
       effectLevelDepth.style.width = '100%';
       effectLevelBar.removeAttribute('style');
-      if (img.classList.contains('effects__preview--none')) {
-        effectLevelBar.style.display = 'none';
-      } else if (img.classList.contains('effects__preview--chrome')) {
-        img.style.filter = 'grayscale(1)';
-      } else if (img.classList.contains('effects__preview--sepia')) {
-        img.style.filter = 'sepia(1)';
-      } else if (img.classList.contains('effects__preview--marvin')) {
-        img.style.filter = 'invert(100%)';
-      } else if (img.classList.contains('effects__preview--phobos')) {
-        img.style.filter = 'blur(3px)';
-      } else if (img.classList.contains('effects__preview--heat')) {
-        img.style.filter = 'brightness(3)';
-      }
+      effectLevelBar.style.display = classNameToStyle[img.classList];
       imgScaleOutput.value = '100%';
     });
   };
