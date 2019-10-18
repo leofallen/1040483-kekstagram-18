@@ -12,7 +12,6 @@
   var socialCommentCount = bigPictureSocial.querySelector('.social__comment-count');
   var commentLoader = bigPictureSocial.querySelector('.comments-loader');
   var commentLoaderInput = bigPicture.querySelector('.social__footer-text');
-  var previewImg = window.picturesList.querySelectorAll('.picture');
 
   var bigImageOpen = function (index) {
     bigImg.src = 'photos/' + index + '.jpg';
@@ -92,15 +91,13 @@
     });
   };
 
-  var previewImgListner = function () {
-    for (var i = 0; i < previewImg.length; i++) {
-      onPreviewClick(previewImg[i], i + 1);
-      onPreviewEnterKeydown(previewImg[i], i + 1);
-      getBigPictureComment(previewImg[i], window.userPosts[i], i);
+  window.previewImgListner = function () {
+    for (var i = 0; i < window.previewImg.length; i++) {
+      onPreviewClick(window.previewImg[i], i + 1);
+      onPreviewEnterKeydown(window.previewImg[i], i + 1);
+      getBigPictureComment(window.previewImg[i], window.userPosts[i], i);
     }
   };
-
-  previewImgListner();
 
   commentLoaderInput.addEventListener('focusin', function () {
     bigPictureClose.removeEventListener('click', onBigPictureButtonCloseClick);
