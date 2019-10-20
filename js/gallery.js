@@ -29,8 +29,7 @@
 
   };
 
-  // var tenplateEror = document.querySelector('#error');
-
+  // создание моков
   // var PHOTOS_COUNT = 25;
   // var COMMENTS_COUNT = 10;
   // var LIKES_COUNT = 200;

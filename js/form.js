@@ -299,17 +299,11 @@
   };
 
   // окно процесса загрузки
-  // window.getUnloadWindow = function () {
+  // window.getloadWindow = function () {
   //   var fragment = document.createDocumentFragment();
   //   var element = TemplateLoad.cloneNode(true);
   //   fragment.appendChild(element);
   //   window.main.appendChild(fragment);
-  // };
-
-  // var getErrorUpload = function () {
-  //   var fragment = document.createDocumentFragment();
-  //   var element = TemplateError.cloneNode(true);
-
   // };
 
   var onSuccess = function () {
