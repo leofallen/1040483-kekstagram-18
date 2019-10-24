@@ -45,7 +45,7 @@
 
     window.previewImg = fragment.querySelectorAll('.picture');
 
-    window.previewImgListner();
+    window.previewImgListner(arr);
 
     return fragment;
   };
