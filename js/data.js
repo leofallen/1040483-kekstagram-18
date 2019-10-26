@@ -40,4 +40,20 @@
     return arr;
   };
 
+  // window.debounce = function (f, ms) {
+
+  //   var isCooldown = false;
+
+  //   return function() {
+  //     if (isCooldown) return;
+
+  //     f.apply(this, arguments);
+
+  //     isCooldown = true;
+
+  //     setTimeout(() => isCooldown = false, ms);
+  //   };
+
+  // }
+
 })();
