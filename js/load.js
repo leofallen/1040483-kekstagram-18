@@ -34,7 +34,7 @@
 
     xhr.responseType = 'json';
 
-    xhr.addEventListener('unload', window.getUnloadWindow);
+    xhr.addEventListener('readystatechange', window.getloadWindow);
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {

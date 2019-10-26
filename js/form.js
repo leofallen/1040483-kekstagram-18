@@ -42,7 +42,7 @@
     document.addEventListener('keydown', onImgSetupEscPress);
   };
 
-  var imgSetupReset = function () {
+  var resetImgSetup = function () {
     img.style.transform = 'scale(1)';
     imgScaleOutput.value = '100%';
     img.removeAttribute('style');
@@ -56,7 +56,7 @@
   var onImgSetupEscPress = function (evt) {
     if (evt.keyCode === 27) {
       imgSetup.classList.add('hidden');
-      imgSetupReset();
+      resetImgSetup();
     }
   };
 
@@ -64,14 +64,14 @@
     if (evt.target === imgSetup) {
       imgSetup.classList.add('hidden');
       document.removeEventListener('keydown', onImgSetupEscPress);
-      imgSetupReset();
+      resetImgSetup();
     }
   };
 
   var imgSetupClose = function () {
     imgSetup.classList.add('hidden');
     document.removeEventListener('keydown', onImgSetupEscPress);
-    imgSetupReset();
+    resetImgSetup();
   };
 
   upLoader.addEventListener('change', onUpLoaderChange);
@@ -299,23 +299,17 @@
   };
 
   // окно процесса загрузки
-  // window.getUnloadWindow = function () {
+  // window.getloadWindow = function () {
   //   var fragment = document.createDocumentFragment();
   //   var element = TemplateLoad.cloneNode(true);
   //   fragment.appendChild(element);
   //   window.main.appendChild(fragment);
   // };
 
-  // var getErrorUpload = function () {
-  //   var fragment = document.createDocumentFragment();
-  //   var element = TemplateError.cloneNode(true);
-
-  // };
-
   var onSuccess = function () {
     imgSetup.classList.add('hidden');
     getSuccessUpload();
-    imgSetupReset();
+    resetImgSetup();
   };
 
   var onError = function (message) {
@@ -344,27 +338,27 @@
 
     restartButton.addEventListener('click', function () {
       element.remove();
-      imgSetupReset();
+      resetImgSetup();
     });
 
     restartButton.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.ENTER_BUTTON) {
         element.remove();
-        imgSetupReset();
+        resetImgSetup();
       }
     });
 
     element.addEventListener('click', function (evt) {
       if (evt.target === element) {
         element.remove();
-        imgSetupReset();
+        resetImgSetup();
       }
     });
 
     document.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.ESC_BUTTON) {
         element.remove();
-        imgSetupReset();
+        resetImgSetup();
       }
     });
 
