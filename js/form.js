@@ -318,6 +318,7 @@
     var title = element.querySelector('.error__title');
     var reloadButton = element.querySelector('.error__button--reload');
     var restartButton = element.querySelector('.error__button--restart');
+
     title.textContent = message;
     imgSetup.classList.add('hidden');
     reloadButton.addEventListener('click', function (evt) {
