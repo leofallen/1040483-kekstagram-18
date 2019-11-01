@@ -60,18 +60,16 @@
     }
   };
 
-  var onOverlayImgCloseClick = function (evt) {
-    if (evt.target === imgSetup) {
-      imgSetup.classList.add('hidden');
-      document.removeEventListener('keydown', onImgSetupEscPress);
-      resetImgSetup();
-    }
-  };
-
   var imgSetupClose = function () {
     imgSetup.classList.add('hidden');
     document.removeEventListener('keydown', onImgSetupEscPress);
     resetImgSetup();
+  };
+
+  var onOverlayImgCloseClick = function (evt) {
+    if (evt.target === imgSetup) {
+      imgSetupClose();
+    }
   };
 
   window.upLoader.addEventListener('change', onUpLoaderChange);
@@ -233,6 +231,7 @@
     hashtags = getArrToLowerCase(hashtags);
 
     if (checkMaxHashtagsQuantity) {
+      hashtagInput.style.border = '3px solid red';
       return 'не больше 5 хештегов';
     }
 
@@ -245,26 +244,34 @@
       var checkHashtagReplay = (getReplayHashtagError(currentHashtag, hashtags, i));
       var checkHashtagSpace = (getDoudleSimbolError(currentHashtag, '#'));
 
+
       if (checkHashtagStart) {
+        hashtagInput.classList.add('text__hashtags--error');
         return 'все хештеги дожны начинаться с #';
       }
 
       if (chekHashtagMinLength) {
+        hashtagInput.classList.add('text__hashtags--error');
         return 'хештег не может состоять из одной #';
       }
 
       if (chekHashtagMaxLength) {
+        hashtagInput.classList.add('text__hashtags--error');
         return 'хештеги должны быть не больше 20 символов';
       }
 
       if (checkHashtagReplay) {
+        hashtagInput.classList.add('text__hashtags--error');
         return 'хештеги не должны повторяться';
       }
     }
 
     if (checkHashtagSpace) {
+      hashtagInput.classList.add('text__hashtags--error');
       return 'хештеги должны разделяться пробелом';
     }
+
+    hashtagInput.classList.remove('text__hashtags--error');
 
     return '';
   };
@@ -281,19 +288,23 @@
     var fragment = document.createDocumentFragment();
     var element = TemplateSuccess.cloneNode(true);
     var button = element.querySelector('.success__button');
+
     button.addEventListener('click', function () {
       element.remove();
     });
+
     element.addEventListener('click', function (evt) {
       if (evt.target === element) {
         element.remove();
       }
     });
+
     document.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.ESC_BUTTON) {
         element.remove();
       }
     });
+
     fragment.appendChild(element);
     window.main.appendChild(fragment);
   };
@@ -306,14 +317,14 @@
     window.main.appendChild(fragment);
   };
 
-  var onSuccess = function () {
+  window.onSuccess = function () {
     imgSetup.classList.add('hidden');
     getSuccessUpload();
     resetImgSetup();
     window.loadWindow.remove();
   };
 
-  var onError = function (message) {
+  window.onError = function (message) {
     var fragment = document.createDocumentFragment();
     var element = TemplateError.cloneNode(true);
     var title = element.querySelector('.error__title');
@@ -322,45 +333,44 @@
 
     title.textContent = message;
     imgSetup.classList.add('hidden');
-    reloadButton.addEventListener('click', function (evt) {
-      window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
+
+    var uploadForm = function (evt) {
+      window.upLoad(new FormData(imgUploadForm), window.onSuccess, window.onError);
       evt.preventDefault();
       element.remove();
       imgSetup.classList.remove('hidden');
-    });
+    };
+
+    reloadButton.addEventListener('click', uploadForm);
 
     reloadButton.addEventListener('keydowd', function (evt) {
       if (evt.keyCode === window.ENTER_BUTTON) {
-        window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
-        evt.preventDefault();
-        element.remove();
-        imgSetup.classList.remove('hidden');
+        uploadForm(evt);
       }
     });
 
-    restartButton.addEventListener('click', function () {
+    var resetForm = function () {
       element.remove();
       resetImgSetup();
-    });
+    };
+
+    restartButton.addEventListener('click', resetForm);
 
     restartButton.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.ENTER_BUTTON) {
-        element.remove();
-        resetImgSetup();
+        resetForm();
       }
     });
 
     element.addEventListener('click', function (evt) {
       if (evt.target === element) {
-        element.remove();
-        resetImgSetup();
+        resetForm();
       }
     });
 
     document.addEventListener('keydown', function (evt) {
       if (evt.keyCode === window.ESC_BUTTON) {
-        element.remove();
-        resetImgSetup();
+        resetForm();
       }
     });
 
@@ -370,7 +380,7 @@
   };
 
   imgUploadForm.addEventListener('submit', function (evt) {
-    window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
+    window.upLoad(new FormData(imgUploadForm), window.onSuccess, window.onError);
     evt.preventDefault();
   });
 
