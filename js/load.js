@@ -34,7 +34,9 @@
 
     xhr.responseType = 'json';
 
-    xhr.addEventListener('readystatechange', window.getloadWindow);
+    if (xhr.readyState === 0) {
+      window.getloadWindow();
+    }
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
@@ -56,5 +58,10 @@
 
     xhr.open('POST', URL);
     xhr.send(data);
+
+    // if (xhr.readyState === 1) {
+    //   window.loadWindow.remove();
+    // }
+
   };
 })();
