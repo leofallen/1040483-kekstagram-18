@@ -109,7 +109,6 @@
 
       window.picturesList.appendChild(window.getPosts(window.gallery));
     }
-
   };
 
   // изначальный порядок фотографий
