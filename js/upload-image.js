@@ -4,9 +4,9 @@
 
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-  window.upLoader.addEventListener('change', function () {
+  window.form.upLoader.addEventListener('change', function () {
 
-    var file = window.upLoader.files[0];
+    var file = window.form.upLoader.files[0];
 
     if (file) {
       var fileName = file.name.toLowerCase();
@@ -20,7 +20,7 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        window.img.src = reader.result;
+        window.form.img.src = reader.result;
       });
     }
 

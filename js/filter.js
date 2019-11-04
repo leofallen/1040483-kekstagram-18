@@ -2,6 +2,8 @@
 
 (function () {
 
+  var MAX_RANDOM_QUANTITY = 10;
+
   var filtersContainer = document.querySelector('.img-filters');
   var filterButtons = filtersContainer.querySelectorAll('.img-filters__button');
   var discussedButton = filtersContainer.querySelector('#filter-discussed');
@@ -21,7 +23,7 @@
     });
 
     button.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.ENTER_BUTTON) {
+      if (evt.keyCode === window.data.ENTER_BUTTON) {
         filterButtons.forEach(function (element) {
           element.classList.remove('img-filters__button--active');
         });
@@ -31,7 +33,7 @@
   };
 
   var resetGallery = function () {
-    var imageList = window.picturesList.querySelectorAll('.picture');
+    var imageList = window.data.picturesList.querySelectorAll('.picture');
     imageList.forEach(function (element) {
       element.remove();
     });
@@ -48,16 +50,16 @@
 
     resetGallery();
 
-    window.picturesList.appendChild(window.getPosts(window.userPosts));
+    window.data.picturesList.appendChild(window.gallery.getPosts(window.userPosts));
   };
 
   var onPopularButtonEnterPres = function (evt) {
-    if (evt.keyCode === window.ENTER_BUTTON) {
+    if (evt.keyCode === window.data.ENTER_BUTTON) {
       evt.preventDefault();
 
       resetGallery();
 
-      window.picturesList.appendChild(window.getPosts(window.userPosts));
+      window.data.picturesList.appendChild(window.gallery.getPosts(window.userPosts));
     }
   };
 
@@ -66,61 +68,61 @@
 
     resetGallery();
     var randomPhoto = window.userPosts.slice();
-    window.shuffle(randomPhoto);
-    randomPhoto = randomPhoto.slice(0, 10);
+    window.data.shuffle(randomPhoto);
+    randomPhoto = randomPhoto.slice(0, MAX_RANDOM_QUANTITY);
 
-    window.picturesList.appendChild(window.getPosts(randomPhoto));
+    window.data.picturesList.appendChild(window.gallery.getPosts(randomPhoto));
   };
 
   var onRandomButtonEnterPress = function (evt) {
-    if (evt.keyCode === window.ENTER_BUTTON) {
+    if (evt.keyCode === window.data.ENTER_BUTTON) {
       evt.preventDefault();
 
       resetGallery();
       var randomPhoto = window.userPosts.slice();
-      window.shuffle(randomPhoto);
-      randomPhoto = randomPhoto.slice(0, 10);
+      window.data.shuffle(randomPhoto);
+      randomPhoto = randomPhoto.slice(0, MAX_RANDOM_QUANTITY);
 
-      window.picturesList.appendChild(window.getPosts(randomPhoto));
+      window.data.picturesList.appendChild(window.gallery.getPosts(randomPhoto));
     }
   };
 
   var onDiscussedButtonClick = function (evt) {
     evt.preventDefault();
-    window.gallery = window.userPosts.slice()
+    window.renderGallery = window.userPosts.slice()
     .sort(function (a, b) {
       return b.comments.length - a.comments.length;
     });
 
     resetGallery();
 
-    window.picturesList.appendChild(window.getPosts(window.gallery));
+    window.data.picturesList.appendChild(window.gallery.getPosts(window.renderGallery));
   };
 
   var onDiscussedButtonEnterPress = function (evt) {
-    if (evt.keyCode === window.ENTER_BUTTON) {
+    if (evt.keyCode === window.data.ENTER_BUTTON) {
       evt.preventDefault();
-      window.gallery = window.userPosts.slice()
+      window.renderGallery = window.userPosts.slice()
       .sort(function (a, b) {
         return b.comments.length - a.comments.length;
       });
 
       resetGallery();
 
-      window.picturesList.appendChild(window.getPosts(window.gallery));
+      window.data.picturesList.appendChild(window.gallery.getPosts(window.renderGallery));
     }
   };
 
   // изначальный порядок фотографий
-  popularButton.addEventListener('click', window.debounce(onPopularButtonClick));
-  popularButton.addEventListener('keydown', window.debounce(onPopularButtonEnterPres));
+  popularButton.addEventListener('click', window.data.debounce(onPopularButtonClick));
+  popularButton.addEventListener('keydown', window.data.debounce(onPopularButtonEnterPres));
 
   // случайные, не повторяющиеся 10 фотографии
-  randomButton.addEventListener('click', window.debounce(onRandomButtonClick));
-  randomButton.addEventListener('keydown', window.debounce(onRandomButtonEnterPress));
+  randomButton.addEventListener('click', window.data.debounce(onRandomButtonClick));
+  randomButton.addEventListener('keydown', window.data.debounce(onRandomButtonEnterPress));
 
   // порядок по обсуждаемости
-  discussedButton.addEventListener('click', window.debounce(onDiscussedButtonClick));
-  discussedButton.addEventListener('keydown', window.debounce(onDiscussedButtonEnterPress));
+  discussedButton.addEventListener('click', window.data.debounce(onDiscussedButtonClick));
+  discussedButton.addEventListener('keydown', window.data.debounce(onDiscussedButtonEnterPress));
 
 })();
