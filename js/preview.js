@@ -2,6 +2,9 @@
 
 (function () {
 
+  var COMMENTS_VISIBILITY = 5;
+  var MAX_COMMENTS_VISIBILITY = COMMENTS_VISIBILITY;
+
   var body = document.querySelector('body');
   var bigPicture = document.querySelector('.big-picture');
   var bigImg = bigPicture.querySelector('img');
@@ -15,9 +18,6 @@
   var commentLoader = bigPictureSocial.querySelector('.comments-loader');
   var commentLoaderInput = bigPicture.querySelector('.social__footer-text');
   var commentsList = bigPictureCommentsList.children;
-
-  var COMMENTS_VISIBILITY = 5;
-  var MAX_COMMENTS_VISIBILITY = COMMENTS_VISIBILITY;
 
   var bigImageOpen = function (globeArr, index) {
     bigImg.src = globeArr[index - 1].url;
@@ -42,7 +42,7 @@
 
   var onPreviewEnterKeydown = function (element, index, globeArr) {
     element.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.ENTER_BUTTON) {
+      if (evt.keyCode === window.data.ENTER_BUTTON) {
         bigImageOpen(globeArr, index);
       }
     });
@@ -83,7 +83,7 @@
   };
 
   var onBigpictureEscPress = function (evt) {
-    if (evt.keyCode === window.ESC_BUTTON) {
+    if (evt.keyCode === window.data.ESC_BUTTON) {
       evt.preventDefault();
       bigPictureClose();
     }
@@ -101,9 +101,9 @@
 
   var getBigPictureComment = function (element, arr, globIndex, globeArr) {
     element.addEventListener('click', function () {
-      for (var i = 0; i < arr.comments.length; i++) {
-        bigPictureCommentsList.appendChild(getComment(globIndex, i, globeArr));
-      }
+      arr.comments.forEach(function (elmnt, index) {
+        bigPictureCommentsList.appendChild(getComment(globIndex, index, globeArr));
+      });
       addCommentsVisibility();
       getCommentCount(MAX_COMMENTS_VISIBILITY, commentsList.length);
     });
@@ -148,11 +148,11 @@
   commentLoader.addEventListener('click', addMoreComents);
 
   window.previewImgListner = function (arr) {
-    for (var i = 0; i < window.previewImg.length; i++) {
-      onPreviewClick(window.previewImg[i], i + 1, arr);
-      onPreviewEnterKeydown(window.previewImg[i], i + 1, arr);
-      getBigPictureComment(window.previewImg[i], arr[i], i, arr);
-    }
+    window.previewImg.forEach(function (element, index) {
+      onPreviewClick(window.previewImg[index], index + 1, arr);
+      onPreviewEnterKeydown(window.previewImg[index], index + 1, arr);
+      getBigPictureComment(window.previewImg[index], arr[index], index, arr);
+    });
   };
 
   commentLoaderInput.addEventListener('focusin', function () {

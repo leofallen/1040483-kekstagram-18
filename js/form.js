@@ -2,31 +2,41 @@
 
 (function () {
 
-  var imgSetup = window.picturesList.querySelector('.img-upload__overlay');
-  window.img = window.picturesList.querySelector('.img-upload__preview').querySelector('img');
-  var imgScaleOutput = window.picturesList.querySelector('.scale__control--value');
-  var effectLevelPin = window.picturesList.querySelector('.effect-level__pin');
-  var effectLevelDepth = window.picturesList.querySelector('.effect-level__depth');
-  var imgUploadForm = window.picturesList.querySelector('.img-upload__form');
-  window.upLoader = window.picturesList.querySelector('#upload-file');
-  var imgSetupButtonClose = window.picturesList.querySelector('.img-upload__cancel');
-  var hashtagInput = window.picturesList.querySelector('.text__hashtags');
-  var commentInput = window.picturesList.querySelector('.text__description');
-  var imgScaleSmall = window.picturesList.querySelector('.scale__control--smaller');
-  var imgScaleBig = window.picturesList.querySelector('.scale__control--bigger');
-  var effects = window.picturesList.querySelectorAll('.effects__radio');
-  var effectLevelBar = window.picturesList.querySelector('.img-upload__effect-level');
-  var effectLevelValue = window.picturesList.querySelector('.effect-level__value');
-  var TemplateSuccess = document.querySelector('#success').content.querySelector('.success');
-  var TemplateError = document.querySelector('#error').content.querySelector('.error');
-  var TemplateLoad = document.querySelector('#messages').content.querySelector('.img-upload__message');
-
   var IMG_MIN_SIZE = 25;
   var IMG_MAX_SIZE = 100;
   var MIN_SLIDER_COORDS = 0;
   var MAX_SLIDER_COORDS = 453;
   var HASHTAG_LENGTH = 20;
   var MAX_TAGS = 5;
+
+  var imgSetup = window.data.picturesList.querySelector('.img-upload__overlay');
+  var imgScaleOutput = window.data.picturesList.querySelector('.scale__control--value');
+  var effectLevelPin = window.data.picturesList.querySelector('.effect-level__pin');
+  var effectLevelDepth = window.data.picturesList.querySelector('.effect-level__depth');
+  var imgUploadForm = window.data.picturesList.querySelector('.img-upload__form');
+  var imgSetupButtonClose = window.data.picturesList.querySelector('.img-upload__cancel');
+  var hashtagInput = window.data.picturesList.querySelector('.text__hashtags');
+  var commentInput = window.data.picturesList.querySelector('.text__description');
+  var imgScaleSmall = window.data.picturesList.querySelector('.scale__control--smaller');
+  var imgScaleBig = window.data.picturesList.querySelector('.scale__control--bigger');
+  var effects = window.data.picturesList.querySelectorAll('.effects__radio');
+  var effectLevelBar = window.data.picturesList.querySelector('.img-upload__effect-level');
+  var effectLevelValue = window.data.picturesList.querySelector('.effect-level__value');
+  var TemplateSuccess = document.querySelector('#success').content.querySelector('.success');
+  var TemplateError = document.querySelector('#error').content.querySelector('.error');
+  var TemplateLoad = document.querySelector('#messages').content.querySelector('.img-upload__message');
+
+  window.form = {
+    img: window.data.picturesList.querySelector('.img-upload__preview').querySelector('img'),
+    upLoader: window.data.picturesList.querySelector('#upload-file'),
+    // окно процесса загрузки
+    getloadWindow: function () {
+      var fragment = document.createDocumentFragment();
+      window.loadWindow = TemplateLoad.cloneNode(true);
+      fragment.appendChild(window.loadWindow);
+      window.gallery.main.appendChild(fragment);
+    }
+  };
 
   var classNameToStyle = {
     'effects__preview--none': 'none',
@@ -43,10 +53,10 @@
   };
 
   var resetImgSetup = function () {
-    window.img.style.transform = 'scale(1)';
+    window.form.img.style.transform = 'scale(1)';
     imgScaleOutput.value = '100%';
-    window.img.removeAttribute('style');
-    window.img.removeAttribute('class');
+    window.form.img.removeAttribute('style');
+    window.form.img.removeAttribute('class');
     effectLevelPin.style.left = '453px';
     effectLevelDepth.style.width = '100%';
     effectLevelBar.style.display = 'none';
@@ -60,7 +70,7 @@
     }
   };
 
-  var imgSetupClose = function () {
+  var onimgSetupClose = function () {
     imgSetup.classList.add('hidden');
     document.removeEventListener('keydown', onImgSetupEscPress);
     resetImgSetup();
@@ -68,12 +78,12 @@
 
   var onOverlayImgCloseClick = function (evt) {
     if (evt.target === imgSetup) {
-      imgSetupClose();
+      onimgSetupClose();
     }
   };
 
-  window.upLoader.addEventListener('change', onUpLoaderChange);
-  imgSetupButtonClose.addEventListener('click', imgSetupClose);
+  window.form.upLoader.addEventListener('change', onUpLoaderChange);
+  imgSetupButtonClose.addEventListener('click', onimgSetupClose);
   hashtagInput.addEventListener('focusin', function () {
     document.removeEventListener('keydown', onImgSetupEscPress);
   });
@@ -90,13 +100,13 @@
 
   // мастшабирование фотографии
 
-  window.img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
+  window.form.img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
 
   imgScaleSmall.addEventListener('click', function () {
     if (imgScaleOutput.value.replace('%', '') > IMG_MIN_SIZE) {
       var numValue = (imgScaleOutput.value.replace('%', ''));
       imgScaleOutput.value = numValue - IMG_MIN_SIZE;
-      window.img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
+      window.form.img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
       imgScaleOutput.value = imgScaleOutput.value + '%';
     }
   });
@@ -105,7 +115,7 @@
     if (imgScaleOutput.value.replace('%', '') < IMG_MAX_SIZE) {
       var numValue = (imgScaleOutput.value.replace('%', ''));
       imgScaleOutput.value = Number(numValue) + IMG_MIN_SIZE;
-      window.img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
+      window.form.img.style.transform = 'scale(' + imgScaleOutput.value.replace('%', '') * 0.01 + ')';
       imgScaleOutput.value = imgScaleOutput.value + '%';
     }
   });
@@ -114,12 +124,12 @@
 
   var filterClickListener = function (button) {
     button.addEventListener('click', function () {
-      window.img.className = 'effects__preview--' + button.value;
-      window.img.removeAttribute('style');
+      window.form.img.className = 'effects__preview--' + button.value;
+      window.form.img.removeAttribute('style');
       effectLevelPin.style.left = '453px';
       effectLevelDepth.style.width = '100%';
       effectLevelBar.removeAttribute('style');
-      effectLevelBar.style.display = classNameToStyle[window.img.classList];
+      effectLevelBar.style.display = classNameToStyle[window.form.img.classList];
       imgScaleOutput.value = '100%';
     });
   };
@@ -168,20 +178,20 @@
   effectLevelPin.addEventListener('mousedown', function () {
 
     var onMouseMove = function () {
-      if (window.img.classList.contains('effects__preview--chrome')) {
-        window.img.style.filter = 'grayscale(' + effectLevelDepth.style.width.replace('%', '') * 0.01 + ')';
+      if (window.form.img.classList.contains('effects__preview--chrome')) {
+        window.form.img.style.filter = 'grayscale(' + effectLevelDepth.style.width.replace('%', '') * 0.01 + ')';
         effectLevelValue.setAttribute('value', '' + effectLevelDepth.style.width.replace('%', '') * 0.01 + '');
-      } else if (window.img.classList.contains('effects__preview--sepia')) {
-        window.img.style.filter = 'sepia(' + effectLevelDepth.style.width.replace('%', '') * 0.01 + ')';
+      } else if (window.form.img.classList.contains('effects__preview--sepia')) {
+        window.form.img.style.filter = 'sepia(' + effectLevelDepth.style.width.replace('%', '') * 0.01 + ')';
         effectLevelValue.textContent = effectLevelDepth.style.width.replace('%', '') * 0.01;
-      } else if (window.img.classList.contains('effects__preview--marvin')) {
-        window.img.style.filter = 'invert(' + effectLevelDepth.style.width + ')';
+      } else if (window.form.img.classList.contains('effects__preview--marvin')) {
+        window.form.img.style.filter = 'invert(' + effectLevelDepth.style.width + ')';
         effectLevelValue.textContent = effectLevelDepth.style.width.replace('%', '');
-      } else if (window.img.classList.contains('effects__preview--phobos')) {
-        window.img.style.filter = 'blur(' + effectLevelDepth.style.width.replace('%', '') * 0.03 + 'px' + ')';
+      } else if (window.form.img.classList.contains('effects__preview--phobos')) {
+        window.form.img.style.filter = 'blur(' + effectLevelDepth.style.width.replace('%', '') * 0.03 + 'px' + ')';
         effectLevelValue.textContent = effectLevelDepth.style.width.replace('%', '') * 0.03 + 'px';
-      } else if (window.img.classList.contains('effects__preview--heat')) {
-        window.img.style.filter = 'brightness(' + ((effectLevelDepth.style.width.replace('%', '') * 0.02) + 1) + ')';
+      } else if (window.form.img.classList.contains('effects__preview--heat')) {
+        window.form.img.style.filter = 'brightness(' + ((effectLevelDepth.style.width.replace('%', '') * 0.02) + 1) + ')';
         effectLevelValue.textContent = ((effectLevelDepth.style.width.replace('%', '') * 0.02) + 1);
       }
     };
@@ -225,15 +235,13 @@
   };
 
   var getHashtagError = function () {
-    var hashtags = hashtagInput.value.split(' ');
+    var hashtags = hashtagInput.value.split(' ')
+    .filter(function (element) {
+      return element !== '';
+    });
     var checkMaxHashtagsQuantity = (hashtags.length > MAX_TAGS);
 
     hashtags = getArrToLowerCase(hashtags);
-
-    if (checkMaxHashtagsQuantity) {
-      hashtagInput.style.border = '3px solid red';
-      return 'не больше 5 хештегов';
-    }
 
     for (var i = 0; i < hashtags.length; i++) {
 
@@ -253,6 +261,11 @@
       if (chekHashtagMinLength) {
         hashtagInput.classList.add('text__hashtags--error');
         return 'хештег не может состоять из одной #';
+      }
+
+      if (checkMaxHashtagsQuantity) {
+        hashtagInput.classList.add('text__hashtags--error');
+        return 'не больше 5 хештегов';
       }
 
       if (chekHashtagMaxLength) {
@@ -300,31 +313,23 @@
     });
 
     document.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.ESC_BUTTON) {
+      if (evt.keyCode === window.data.ESC_BUTTON) {
         element.remove();
       }
     });
 
     fragment.appendChild(element);
-    window.main.appendChild(fragment);
+    window.gallery.main.appendChild(fragment);
   };
 
-  // окно процесса загрузки
-  window.getloadWindow = function () {
-    var fragment = document.createDocumentFragment();
-    window.loadWindow = TemplateLoad.cloneNode(true);
-    fragment.appendChild(window.loadWindow);
-    window.main.appendChild(fragment);
-  };
-
-  window.onSuccess = function () {
+  var onSuccess = function () {
     imgSetup.classList.add('hidden');
     getSuccessUpload();
     resetImgSetup();
     window.loadWindow.remove();
   };
 
-  window.onError = function (message) {
+  var onError = function (message) {
     var fragment = document.createDocumentFragment();
     var element = TemplateError.cloneNode(true);
     var title = element.querySelector('.error__title');
@@ -335,7 +340,7 @@
     imgSetup.classList.add('hidden');
 
     var uploadForm = function (evt) {
-      window.upLoad(new FormData(imgUploadForm), window.onSuccess, window.onError);
+      window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
       evt.preventDefault();
       element.remove();
       imgSetup.classList.remove('hidden');
@@ -344,7 +349,7 @@
     reloadButton.addEventListener('click', uploadForm);
 
     reloadButton.addEventListener('keydowd', function (evt) {
-      if (evt.keyCode === window.ENTER_BUTTON) {
+      if (evt.keyCode === window.data.ENTER_BUTTON) {
         uploadForm(evt);
       }
     });
@@ -357,7 +362,7 @@
     restartButton.addEventListener('click', resetForm);
 
     restartButton.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.ENTER_BUTTON) {
+      if (evt.keyCode === window.data.ENTER_BUTTON) {
         resetForm();
       }
     });
@@ -369,18 +374,18 @@
     });
 
     document.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.ESC_BUTTON) {
+      if (evt.keyCode === window.data.ESC_BUTTON) {
         resetForm();
       }
     });
 
     fragment.appendChild(element);
-    window.main.appendChild(fragment);
+    window.gallery.main.appendChild(fragment);
     window.loadWindow.remove();
   };
 
   imgUploadForm.addEventListener('submit', function (evt) {
-    window.upLoad(new FormData(imgUploadForm), window.onSuccess, window.onError);
+    window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
     evt.preventDefault();
   });
 
