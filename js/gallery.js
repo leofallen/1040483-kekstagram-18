@@ -54,6 +54,14 @@
     window.data.picturesList.appendChild(window.gallery.getPosts(window.userPosts));
   };
 
-  window.load('https://js.dump.academy/kekstagram/data', onSuccess, onError);
+  var xhr = window.data.getXHR();
+
+  window.data.getLoading(
+      xhr,
+      onSuccess,
+      onError,
+      'GET',
+      'https://js.dump.academy/kekstagram/data'
+  );
 
 })();

@@ -340,7 +340,22 @@
     imgSetup.classList.add('hidden');
 
     var uploadForm = function (evt) {
-      window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
+      var xhr = window.data.getXHR();
+
+      if (xhr.readyState === 0) {
+        window.form.getloadWindow();
+      }
+
+      window.data.getLoading(
+          xhr,
+          onSuccess,
+          onError,
+          'POST',
+          'https://js.dump.academy/kekstagram',
+          new FormData(imgUploadForm),
+          window.form.getloadWindow
+      );
+
       evt.preventDefault();
       element.remove();
       imgSetup.classList.remove('hidden');
@@ -385,7 +400,23 @@
   };
 
   imgUploadForm.addEventListener('submit', function (evt) {
-    window.upLoad(new FormData(imgUploadForm), onSuccess, onError);
+
+    var xhr = window.data.getXHR();
+
+    if (xhr.readyState === 0) {
+      window.form.getloadWindow();
+    }
+
+    window.data.getLoading(
+        xhr,
+        onSuccess,
+        onError,
+        'POST',
+        'https://js.dump.academy/kekstagram',
+        new FormData(imgUploadForm),
+        window.form.getloadWindow
+    );
+
     evt.preventDefault();
   });
 
